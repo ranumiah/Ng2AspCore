@@ -1,0 +1,32 @@
+using System;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Ng2AspCore.DBModel;
+
+
+namespace Ng2AspCore.Controllers
+{
+    [Route("api/Employee")]
+    public class EmployeeController : Controller
+    {
+        HRContext hrContext;
+        public EmployeeController(HRContext hrContext)
+        {
+            this.hrContext = hrContext;
+        }
+
+
+        [HttpGet("GetAll")]
+        public IActionResult GetAllEmployees()
+        {
+            var query = from emp in hrContext.Employees
+                        join rm in hrContext.RoleAssignments on emp.EmployeeId equals rm.EmployeeId
+                        where rm.Position == "Software developer"
+                        select emp;
+            return Ok(query.ToList());
+        }
+    }
+}
